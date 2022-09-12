@@ -425,8 +425,13 @@ namespace sk {
         stream.flush();
     }
 
-    void Writer::print_from_print_info(PrintInfo print_info) {
-        const char *s = print_info.fmt;
+    void Writer::println(const char* fmt, Args args) {
+        print(fmt, args);
+        write('\n');
+    }
+
+    void Writer::print(const char* fmt, Args args) {
+        const char *s = fmt;
         size_t s_len = 0;
         size_t current_arg = 0;
         while (s[s_len] != '\0') {
@@ -448,7 +453,7 @@ namespace sk {
                     std::from_chars(index_start, index_end, arg_index);
                 }
 
-                assert(arg_index < print_info.num_args);
+                assert(arg_index < args.size);
 
                 size_t fmt_len = 0;
                 if (s[s_len + i] == ':') {
@@ -457,7 +462,7 @@ namespace sk {
                 }
 
                 auto fmt = std::string_view{ &s[s_len + i], fmt_len };
-                auto arg = print_info.args[arg_index];
+                auto arg = args.args[arg_index];
                 arg.printer(arg.value_ptr, fmt, *this);
 
                 s = &s[s_len + i + fmt_len + 1];

@@ -15,9 +15,8 @@ namespace sk {
         const void* value_ptr;
     };
 
-    struct PrintInfo {
-        const char* fmt;
-        size_t num_args;
+    struct Args {
+        size_t size;
         Arg* args;
     };
 
@@ -48,20 +47,22 @@ namespace sk {
 
         void flush();
 
+        void print(const char* fmt, Args args);
+        void println(const char* fmt, Args args);
+
         template<typename... Ts>
         void print(const char* fmt, const Ts&... args) {
             if constexpr (sizeof...(Ts) == 0) {
                 write(fmt);
             } else {
-                auto print_info = PrintInfo {
-                    fmt,
+                auto packed = Args {
                     sizeof...(Ts),
                     new Arg[sizeof...(Ts)]{ { reinterpret_cast<Printer>(Formatter<Ts>::format), &args }... }
                 };
 
-                print_from_print_info(print_info);
+                print(fmt, packed);
 
-                delete[] print_info.args;
+                delete[] packed.args;
             }
         }
 
@@ -70,24 +71,17 @@ namespace sk {
             if constexpr (sizeof...(Ts) == 0) {
                 write(fmt);
                 write('\n');
-                flush();
             } else {
-                auto print_info = PrintInfo {
-                    fmt,
+                auto packed = Args {
                     sizeof...(Ts),
                     new Arg[sizeof...(Ts)]{ { reinterpret_cast<Printer>(Formatter<Ts>::format), &args }... }
                 };
 
-                print_from_print_info(print_info);
-                write('\n');
-                flush();
+                println(fmt, packed);
 
-                delete[] print_info.args;
+                delete[] packed.args;
             }
-        }      
-
-    private:
-        void print_from_print_info(PrintInfo print_info);
+        }
 
     private:
         std::ostream& stream;
