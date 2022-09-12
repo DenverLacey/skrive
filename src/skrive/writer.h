@@ -15,10 +15,28 @@ namespace sk {
         const void* value_ptr;
     };
 
-    struct Args {
-        size_t size;
-        Arg* args;
+    class Args {
+    public:
+        Args(size_t size, Arg* args);
+        ~Args();
+
+        Args(const Args& other) = delete;
+        Args(Args&& other) = delete;
+
+    public:
+        Arg& operator[](size_t index) const;
+        size_t size() const;
+        Arg* args() const;
+
+    private:
+        size_t _size;
+        Arg* _args;
     };
+
+    template<typename... Ts>
+    Args to_args(const Ts&... args) {
+        return Args { sizeof...(Ts), new Arg[sizeof...(Ts)]{ { reinterpret_cast<Printer>(Formatter<Ts>::format), &args }... } };
+    }
 
     class Writer {
     public:
@@ -47,22 +65,16 @@ namespace sk {
 
         void flush();
 
-        void print(const char* fmt, Args args);
-        void println(const char* fmt, Args args);
+        void print(const char* fmt, const Args& args);
+        void println(const char* fmt, const Args& args);
 
         template<typename... Ts>
         void print(const char* fmt, const Ts&... args) {
             if constexpr (sizeof...(Ts) == 0) {
                 write(fmt);
             } else {
-                auto packed = Args {
-                    sizeof...(Ts),
-                    new Arg[sizeof...(Ts)]{ { reinterpret_cast<Printer>(Formatter<Ts>::format), &args }... }
-                };
-
+                auto packed = to_args(args...);
                 print(fmt, packed);
-
-                delete[] packed.args;
             }
         }
 
@@ -72,14 +84,8 @@ namespace sk {
                 write(fmt);
                 write('\n');
             } else {
-                auto packed = Args {
-                    sizeof...(Ts),
-                    new Arg[sizeof...(Ts)]{ { reinterpret_cast<Printer>(Formatter<Ts>::format), &args }... }
-                };
-
+                auto packed = to_args(args...);
                 println(fmt, packed);
-
-                delete[] packed.args;
             }
         }
 

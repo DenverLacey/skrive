@@ -4,6 +4,28 @@
 #include <charconv>
 
 namespace sk {
+    Args::Args(size_t size, Arg* args) : 
+        _size(size),
+        _args(args)
+    {
+    }
+
+    Args::~Args() {
+        delete[] _args;
+    }
+
+    Arg& Args::operator[](size_t index) const {
+        return _args[index];
+    }
+
+    size_t Args::size() const {
+        return _size;
+    }
+
+    Arg* Args::args() const {
+        return _args;
+    }
+
     Writer::Writer(std::ostream& stream) :
         stream(stream)
     {
@@ -425,12 +447,12 @@ namespace sk {
         stream.flush();
     }
 
-    void Writer::println(const char* fmt, Args args) {
+    void Writer::println(const char* fmt, const Args& args) {
         print(fmt, args);
         write('\n');
     }
 
-    void Writer::print(const char* fmt, Args args) {
+    void Writer::print(const char* fmt, const Args& args) {
         const char *s = fmt;
         size_t s_len = 0;
         size_t current_arg = 0;
@@ -453,7 +475,7 @@ namespace sk {
                     std::from_chars(index_start, index_end, arg_index);
                 }
 
-                assert(arg_index < args.size);
+                assert(arg_index < args.size());
 
                 size_t fmt_len = 0;
                 if (s[s_len + i] == ':') {
@@ -462,7 +484,7 @@ namespace sk {
                 }
 
                 auto fmt = std::string_view{ &s[s_len + i], fmt_len };
-                auto arg = args.args[arg_index];
+                auto arg = args[arg_index];
                 arg.printer(arg.value_ptr, fmt, *this);
 
                 s = &s[s_len + i + fmt_len + 1];
