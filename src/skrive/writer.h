@@ -30,10 +30,20 @@ namespace sk {
         void write(size_t n, const char* s, Format fmt = {});
 
         void write(bool b, Format fmt = {});
+
         void write(char c, Format fmt = {});
-        void write(int d, Format fmt = {});
-        void write(long d, Format fmt = {});
+
+        void write(int16_t d, Format fmt = {});
+        void write(int32_t d, Format fmt = {});
+        void write(int64_t d, Format fmt = {});
+        void write(uint16_t d, Format fmt = {});
+        void write(uint32_t d, Format fmt = {});
+        void write(uint64_t d, Format fmt = {});
+        void write(size_t d, Format fmt = {});
+        
+        void write(float f, Format fmt = {});
         void write(double f, Format fmt = {});
+        
         void write(void* p, Format fmt = {});
 
         void flush();
@@ -82,27 +92,4 @@ namespace sk {
     private:
         std::ostream& stream;
     };
-
-    inline Writer out = Writer{ std::cout };
-    inline Writer err = Writer{ std::cerr };
-
-    template<typename... Ts>
-    void print(const char* fmt, const Ts&... args) {
-        out.print(fmt, args...);
-    }
-
-    template<typename... Ts>
-    void println(const char* fmt, const Ts&... args) {
-        out.println(fmt, args...);
-    }
-
-    template<typename... Ts>
-    void eprint(const char* fmt, const Ts&... args) {
-        err.print(fmt, args...);
-    }
-
-    template<typename... Ts>
-    void eprintln(const char* fmt, const Ts&... args) {
-        err.println(fmt, args...);
-    }
 }

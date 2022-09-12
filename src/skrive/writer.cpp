@@ -37,21 +37,6 @@ namespace sk {
         }
 
         stream.flags(old_flags);
-
-        // while (*s != '\0') {
-        //     if (write_index >= BUF_SIZE) {
-        //         flush();
-        //     }
-
-        //     buf[write_index] = *s;
-
-        //     write_index++;
-        //     s++;
-        // }
-
-        // if (fmt.alternate) {
-        //     buf[write_index++] = '"';
-        // }
     }
 
     void Writer::write(size_t n, const char* s, Format fmt) {
@@ -82,27 +67,7 @@ namespace sk {
         }
 
         stream.flags(old_flags);
-
-        // @TODO:
-        // Handle big strings
-        //
-        // assert(n < BUF_SIZE);
-
-        // if (write_index + n >= BUF_SIZE) {
-        //     flush();
-        // }
-
-        // if (fmt.alternate) {
-        //     buf[write_index++] = '"';
-        // }
-
-        // memcpy(&buf[write_index], s, n);
-        // write_index += n;
-
-        // if (fmt.alternate) {
-        //     buf[write_index++] = '"';
-        // }
-    }
+    }   
 
     void Writer::write(bool b, Format fmt) {
         auto old_flags = stream.flags();
@@ -175,19 +140,17 @@ namespace sk {
         }
 
         stream.flags(old_flags);
-
-        // if (write_index >= BUF_SIZE) {
-        //     flush();
-        // }
-
-        // buf[write_index++] = c;
     }
 
-    void Writer::write(int d, Format fmt) {
-        write(static_cast<long>(d), fmt);
+    void Writer::write(int16_t d, Format fmt) {
+        write(static_cast<int64_t>(d), fmt);
     }
 
-    void Writer::write(long d, Format fmt) {
+    void Writer::write(int32_t d, Format fmt) {
+        write(static_cast<int64_t>(d), fmt);
+    }
+
+    void Writer::write(int64_t d, Format fmt) {
         auto old_flags = stream.flags();
         stream.clear();
 
@@ -243,6 +206,134 @@ namespace sk {
         stream << d;
 
         stream.flags(old_flags);
+    }
+
+    void Writer::write(uint16_t d, Format fmt) {
+        write(static_cast<uint64_t>(d), fmt);
+    }
+
+    void Writer::write(uint32_t d, Format fmt) {
+        write(static_cast<uint64_t>(d), fmt);
+    }
+
+    void Writer::write(uint64_t d, Format fmt) {
+        auto old_flags = stream.flags();
+        stream.clear();
+
+        // set format
+        stream.fill(fmt.fill);
+        stream.precision(fmt.precision);
+        stream.width(fmt.width);
+
+        switch (fmt.align) {
+            case Format::Align::Left:
+                stream << std::left;
+                break;
+            case Format::Align::Omitted:
+            case Format::Align::Right:
+                stream << std::right;
+                break;
+            case Format::Align::Center:
+                stream << std::internal;
+                break;
+        }
+
+        switch (fmt.sign) {
+            case Format::Sign::Both:
+                if (d >= 0) stream << '+';
+                break;
+            case Format::Sign::Space:
+                if (d >= 0) stream << ' ';
+                break;
+        }
+
+        switch (fmt.type) {
+            case Format::Type::Binary:
+            case Format::Type::BinaryBig:
+                // @TODO
+                break;
+            case Format::Type::Decimal:
+                stream << std::dec;
+                break;
+            case Format::Type::Hex:
+                if (fmt.alternate) stream << "0x";
+                stream << std::hex;
+                break;
+            case Format::Type::HexBig:
+                if (fmt.alternate) stream << "0x";
+                stream << std::uppercase << std::hex;
+                break;
+            case Format::Type::Octal:
+                if (fmt.alternate) stream << "0o";
+                stream << std::oct;
+                break;
+        }
+
+        stream << d;
+
+        stream.flags(old_flags);
+    }
+
+    void Writer::write(size_t d, Format fmt) {
+        auto old_flags = stream.flags();
+        stream.clear();
+
+        // set format
+        stream.fill(fmt.fill);
+        stream.precision(fmt.precision);
+        stream.width(fmt.width);
+
+        switch (fmt.align) {
+            case Format::Align::Left:
+                stream << std::left;
+                break;
+            case Format::Align::Omitted:
+            case Format::Align::Right:
+                stream << std::right;
+                break;
+            case Format::Align::Center:
+                stream << std::internal;
+                break;
+        }
+
+        switch (fmt.sign) {
+            case Format::Sign::Both:
+                if (d >= 0) stream << '+';
+                break;
+            case Format::Sign::Space:
+                if (d >= 0) stream << ' ';
+                break;
+        }
+
+        switch (fmt.type) {
+            case Format::Type::Binary:
+            case Format::Type::BinaryBig:
+                // @TODO
+                break;
+            case Format::Type::Decimal:
+                stream << std::dec;
+                break;
+            case Format::Type::Hex:
+                if (fmt.alternate) stream << "0x";
+                stream << std::hex;
+                break;
+            case Format::Type::HexBig:
+                if (fmt.alternate) stream << "0x";
+                stream << std::uppercase << std::hex;
+                break;
+            case Format::Type::Octal:
+                if (fmt.alternate) stream << "0o";
+                stream << std::oct;
+                break;
+        }
+
+        stream << d;
+
+        stream.flags(old_flags);
+    }
+
+    void Writer::write(float f, Format fmt) {
+        write(static_cast<double>(f));
     }
 
     void Writer::write(double f, Format fmt) {

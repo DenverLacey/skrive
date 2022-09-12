@@ -39,3 +39,6 @@ skrive.make
 
 # MACOS Specific
 .DS_Store
+
+# vscode
+.vscode/

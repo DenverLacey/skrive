@@ -45,5 +45,8 @@ int main(void) {
     sk::println("x: {:>5}", true);
     sk::println("y: {:>5}", false);
 
+    std::string s = sk::format("{} Lacey", name);
+    sk::println("The full name is {:#}", s);
+
     return 0;
 }
