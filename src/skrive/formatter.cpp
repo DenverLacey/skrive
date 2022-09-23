@@ -34,22 +34,22 @@ namespace sk {
         writer.write(obj, format);
     }
 
-    void Formatter<uint16_t>::format(const uint16_t& obj, std::string_view fmt, Writer& writer) {
+    void Formatter<unsigned short>::format(const unsigned short& obj, std::string_view fmt, Writer& writer) {
         auto format = Format::from(fmt);
         writer.write(obj, format);
     }
 
-    void Formatter<uint32_t>::format(const uint32_t& obj, std::string_view fmt, Writer& writer) {
+    void Formatter<unsigned int>::format(const unsigned int& obj, std::string_view fmt, Writer& writer) {
         auto format = Format::from(fmt);
         writer.write(obj, format);
     }
 
-    void Formatter<uint64_t>::format(const uint64_t& obj, std::string_view fmt, Writer& writer) {
+    void Formatter<unsigned long>::format(const unsigned long& obj, std::string_view fmt, Writer& writer) {
         auto format = Format::from(fmt);
         writer.write(obj, format);
     }
 
-    void Formatter<size_t>::format(const size_t& obj, std::string_view fmt, Writer& writer) {
+    void Formatter<unsigned long long>::format(const unsigned long long& obj, std::string_view fmt, Writer& writer) {
         auto format = Format::from(fmt);
         writer.write(obj, format);
     }
