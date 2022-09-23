@@ -34,12 +34,4 @@ namespace sk {
             }
         }
     };
-
-    template<size_t N>
-    struct Formatter<char[N]> {
-        static void format(const char (&obj)[N], std::string_view fmt, Writer& writer) {
-            auto format = Format::from(fmt);
-            writer.write(N, obj, format);
-        }
-    };
 }

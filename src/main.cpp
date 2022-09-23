@@ -9,7 +9,12 @@ struct Vector2 {
 
 template<> struct sk::Formatter<Vector2> {
     static void format(const Vector2& vec, std::string_view fmt, sk::Writer& writer) {
-        writer.print("({:g}, {:g})", vec.x, vec.y);
+        auto format = Format::from(fmt);
+        writer.write('(');
+        writer.write(vec.x, format);
+        writer.write(", ");
+        writer.write(vec.y, format);
+        writer.write(')');
     }
 };
 
@@ -48,7 +53,7 @@ void test_1_primitive() {
 
 void test_1_custom() {
     auto vec = Vector2{ 3.1f, 9.9f };
-    std::string result = sk::format("The vector is {}", vec);
+    std::string result = sk::format("The vector is {:g}", vec);
     assert(result == "The vector is (3.1, 9.9)");
 
     std::cout << __func__ << " passed!\n";

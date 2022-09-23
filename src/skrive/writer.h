@@ -33,9 +33,26 @@ namespace sk {
         Arg* _args;
     };
 
+    namespace _private {
+        template<typename T> struct _formatter_of { using type = Formatter<T>; };
+        template<typename T> struct _formatter_of<T*> { using type = Formatter<void*>; };
+        template<>  struct _formatter_of<const char*> { using type = Formatter<char*>; };
+        template<size_t N> struct _formatter_of<const char[N]> { using type = Formatter<char*>; };
+
+        template<typename T> using formatter_of = typename _formatter_of<T>::type;
+    }
+
     template<typename... Ts>
     Args to_args(const Ts&... args) {
-        return Args { sizeof...(Ts), new Arg[sizeof...(Ts)]{ { reinterpret_cast<Printer>(Formatter<Ts>::format), &args }... } };
+        return Args {
+            sizeof...(Ts),
+            new Arg[sizeof...(Ts)] {
+                {
+                    reinterpret_cast<Printer>(_private::formatter_of<Ts>::format),
+                    &args
+                }...
+            }
+        };
     }
 
     class Writer {
@@ -50,14 +67,15 @@ namespace sk {
 
         void write(char c, Format fmt = {});
 
-        void write(int16_t d, Format fmt = {});
-        void write(int32_t d, Format fmt = {});
-        void write(int64_t d, Format fmt = {});
-        void write(uint16_t d, Format fmt = {});
-        void write(uint32_t d, Format fmt = {});
-        void write(uint64_t d, Format fmt = {});
-        void write(size_t d, Format fmt = {});
-        
+        void write(short d, Format fmt = {});
+        void write(int d, Format fmt = {});
+        void write(long d, Format fmt = {});
+        void write(long long d, Format fmt = {});
+        void write(unsigned short d, Format fmt = {});
+        void write(unsigned int d, Format fmt = {});
+        void write(unsigned long d, Format fmt = {});
+        void write(unsigned long long d, Format fmt = {});
+
         void write(float f, Format fmt = {});
         void write(double f, Format fmt = {});
         

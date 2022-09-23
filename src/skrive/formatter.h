@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string_view>
-#include <stdint.h>
 
 namespace sk {
     class Writer;
@@ -20,38 +19,43 @@ namespace sk {
     };
 
     template<>
-    struct Formatter<int16_t> {
-        static void format(const int16_t& obj, std::string_view fmt, Writer& writer);
+    struct Formatter<short> {
+        static void format(const short& obj, std::string_view fmt, Writer& writer);
     };
 
     template<>
-    struct Formatter<int32_t> {
-        static void format(const int32_t& obj, std::string_view fmt, Writer& writer);
+    struct Formatter<int> {
+        static void format(const int& obj, std::string_view fmt, Writer& writer);
     };
 
     template<>
-    struct Formatter<int64_t> {
-        static void format(const int64_t& obj, std::string_view fmt, Writer& writer);
+    struct Formatter<long> {
+        static void format(const long& obj, std::string_view fmt, Writer& writer);
     };
 
     template<>
-    struct Formatter<uint16_t> {
-        static void format(const uint16_t& obj, std::string_view fmt, Writer& writer);
+    struct Formatter<long long> {
+        static void format(const long long& obj, std::string_view fmt, Writer& writer);
     };
 
     template<>
-    struct Formatter<uint32_t> {
-        static void format(const uint32_t& obj, std::string_view fmt, Writer& writer);
+    struct Formatter<unsigned short> {
+        static void format(const unsigned short& obj, std::string_view fmt, Writer& writer);
     };
 
     template<>
-    struct Formatter<uint64_t> {
-        static void format(const uint64_t& obj, std::string_view fmt, Writer& writer);
+    struct Formatter<unsigned int> {
+        static void format(const unsigned int& obj, std::string_view fmt, Writer& writer);
     };
 
     template<>
-    struct Formatter<size_t> {
-        static void format(const size_t& obj, std::string_view fmt, Writer& writer);
+    struct Formatter<unsigned long> {
+        static void format(const unsigned long& obj, std::string_view fmt, Writer& writer);
+    };
+
+    template<>
+    struct Formatter<unsigned long long> {
+        static void format(const unsigned long long& obj, std::string_view fmt, Writer& writer);
     };
 
     template<>

@@ -164,15 +164,19 @@ namespace sk {
         stream.flags(old_flags);
     }
 
-    void Writer::write(int16_t d, Format fmt) {
-        write(static_cast<int64_t>(d), fmt);
+    void Writer::write(short d, Format fmt) {
+        write(static_cast<long long>(d), fmt);
     }
 
-    void Writer::write(int32_t d, Format fmt) {
-        write(static_cast<int64_t>(d), fmt);
+    void Writer::write(int d, Format fmt) {
+        write(static_cast<long long>(d), fmt);
     }
 
-    void Writer::write(int64_t d, Format fmt) {
+    void Writer::write(long d, Format fmt) {
+        write(static_cast<long long>(d), fmt);
+    }
+
+    void Writer::write(long long d, Format fmt) {
         auto old_flags = stream.flags();
         stream.clear();
 
@@ -230,73 +234,19 @@ namespace sk {
         stream.flags(old_flags);
     }
 
-    void Writer::write(uint16_t d, Format fmt) {
-        write(static_cast<uint64_t>(d), fmt);
+    void Writer::write(unsigned short d, Format fmt) {
+        write(static_cast<unsigned long long>(d), fmt);
     }
 
-    void Writer::write(uint32_t d, Format fmt) {
-        write(static_cast<uint64_t>(d), fmt);
+    void Writer::write(unsigned int d, Format fmt) {
+        write(static_cast<unsigned long long>(d), fmt);
     }
 
-    void Writer::write(uint64_t d, Format fmt) {
-        auto old_flags = stream.flags();
-        stream.clear();
-
-        // set format
-        stream.fill(fmt.fill);
-        stream.precision(fmt.precision);
-        stream.width(fmt.width);
-
-        switch (fmt.align) {
-            case Format::Align::Left:
-                stream << std::left;
-                break;
-            case Format::Align::Omitted:
-            case Format::Align::Right:
-                stream << std::right;
-                break;
-            case Format::Align::Center:
-                stream << std::internal;
-                break;
-        }
-
-        switch (fmt.sign) {
-            case Format::Sign::Both:
-                if (d >= 0) stream << '+';
-                break;
-            case Format::Sign::Space:
-                if (d >= 0) stream << ' ';
-                break;
-        }
-
-        switch (fmt.type) {
-            case Format::Type::Binary:
-            case Format::Type::BinaryBig:
-                // @TODO
-                break;
-            case Format::Type::Decimal:
-                stream << std::dec;
-                break;
-            case Format::Type::Hex:
-                if (fmt.alternate) stream << "0x";
-                stream << std::hex;
-                break;
-            case Format::Type::HexBig:
-                if (fmt.alternate) stream << "0x";
-                stream << std::uppercase << std::hex;
-                break;
-            case Format::Type::Octal:
-                if (fmt.alternate) stream << "0o";
-                stream << std::oct;
-                break;
-        }
-
-        stream << d;
-
-        stream.flags(old_flags);
+    void Writer::write(unsigned long d, Format fmt) {
+        write(static_cast<unsigned long long>(d), fmt);
     }
 
-    void Writer::write(size_t d, Format fmt) {
+    void Writer::write(unsigned long long d, Format fmt) {
         auto old_flags = stream.flags();
         stream.clear();
 
@@ -355,7 +305,7 @@ namespace sk {
     }
 
     void Writer::write(float f, Format fmt) {
-        write(static_cast<double>(f));
+        write(static_cast<double>(f), fmt);
     }
 
     void Writer::write(double f, Format fmt) {
