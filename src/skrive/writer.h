@@ -38,6 +38,7 @@ namespace sk {
         template<typename T> struct _formatter_of<T*> { using type = Formatter<void*>; };
         template<>  struct _formatter_of<const char*> { using type = Formatter<char*>; };
         template<size_t N> struct _formatter_of<const char[N]> { using type = Formatter<char*>; };
+        template<size_t N> struct _formatter_of<char[N]> { using type = Formatter<char*>; };
 
         template<typename T> using formatter_of = typename _formatter_of<T>::type;
     }
